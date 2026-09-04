@@ -6,10 +6,12 @@ export default function FormLivro() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [form, setForm] = useState({ titulo: '', autor: '', isbn: '', quantidadeTotal: 1 })
+  const [erro, setErro] = useState('')
+  const [salvando, setSalvando] = useState(false)
 
   useEffect(() => {
     if (id) {
-      get(`/livros/${id}`).then(setForm)
+      get(`/livros/${id}`).then(setForm).catch((error) => setErro(error.message))
     }
   }, [id])
 
@@ -17,27 +19,41 @@ export default function FormLivro() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const payload = {
       ...form,
+      titulo: (form.titulo || '').trim(),
+      autor: (form.autor || '').trim(),
+      isbn: (form.isbn || '').trim(),
       quantidadeTotal: Number(form.quantidadeTotal),
     }
 
     if (!payload.titulo.trim() || !payload.autor.trim() || payload.quantidadeTotal < 0) {
+      setErro('Preencha titulo, autor e uma quantidade valida.')
       return
     }
 
-    if (id) {
-      put(`/livros/${id}`, payload).then(() => navigate('/livros'))
-    } else {
-      post('/livros', payload).then(() => navigate('/livros'))
+    try {
+      setErro('')
+      setSalvando(true)
+      if (id) {
+        await put(`/livros/${id}`, payload)
+      } else {
+        await post('/livros', payload)
+      }
+      navigate('/livros')
+    } catch (error) {
+      setErro(error.message)
+    } finally {
+      setSalvando(false)
     }
   }
 
   return (
     <div>
       <h1>{id ? 'Editar Livro' : 'Novo Livro'}</h1>
+      {erro && <p className="alert">{erro}</p>}
       <form className="card" onSubmit={handleSubmit}>
         <div className="field">
           <label>Titulo</label>
@@ -55,7 +71,7 @@ export default function FormLivro() {
           <label>Quantidade total</label>
           <input type="number" name="quantidadeTotal" min="0" value={form.quantidadeTotal} onChange={handleChange} required />
         </div>
-        <button type="submit">Salvar</button>
+        <button type="submit" disabled={salvando}>{salvando ? 'Salvando...' : 'Salvar'}</button>
       </form>
     </div>
   )

@@ -27,6 +27,9 @@ public class EmprestimoService {
     }
 
     public Emprestimo emprestar(Emprestimo emprestimo) {
+        if (emprestimo.getLivroId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Livro e obrigatorio");
+        }
         emprestimo.setDataEmprestimo(LocalDate.now());
         emprestimo.setDataDevolucaoPrevista(LocalDate.now().plusDays(7));
         emprestimo.setStatus(StatusEmprestimo.ATIVO);

@@ -4,23 +4,41 @@ import { get, del } from '../services/api'
 
 export default function ListaLivros() {
   const [livros, setLivros] = useState([])
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
     carregar()
   }, [])
 
-  function carregar() {
-    get('/livros').then(setLivros)
+  async function carregar() {
+    try {
+      setErro('')
+      setCarregando(true)
+      setLivros(await get('/livros'))
+    } catch (error) {
+      setErro(error.message)
+    } finally {
+      setCarregando(false)
+    }
   }
 
-  function excluir(id) {
+  async function excluir(id) {
     if (!window.confirm('Deseja excluir este livro?')) return
-    del(`/livros/${id}`).then(carregar)
+    try {
+      setErro('')
+      await del(`/livros/${id}`)
+      await carregar()
+    } catch (error) {
+      setErro(error.message)
+    }
   }
 
   return (
     <div>
       <h1>Livros</h1>
+      {erro && <p className="alert">{erro}</p>}
+      {carregando && <p>Carregando livros...</p>}
       <table>
         <thead>
           <tr>
@@ -32,6 +50,11 @@ export default function ListaLivros() {
           </tr>
         </thead>
         <tbody>
+          {!carregando && livros.length === 0 && (
+            <tr>
+              <td colSpan="5">Nenhum livro cadastrado.</td>
+            </tr>
+          )}
           {livros.map((livro) => (
             <tr key={livro.id}>
               <td>{livro.titulo}</td>

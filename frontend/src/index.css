@@ -21,6 +21,7 @@ button {
   background: #2563eb; color: #fff; border: none;
   padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600;
 }
+button:disabled { opacity: .65; cursor: not-allowed; }
 button.secondary { background: #64748b; }
 button.danger { background: #dc2626; }
 input, select {
@@ -31,3 +32,10 @@ input, select {
 .stat { font-size: 28px; font-weight: 700; }
 form .field { margin-bottom: 14px; }
 label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 14px; }
+.alert {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  padding: 10px 12px;
+}

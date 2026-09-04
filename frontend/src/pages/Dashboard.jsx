@@ -4,10 +4,22 @@ import { get } from '../services/api'
 export default function Dashboard() {
   const [livros, setLivros] = useState([])
   const [emprestimos, setEmprestimos] = useState([])
+  const [erro, setErro] = useState('')
 
   useEffect(() => {
-    get('/livros').then(setLivros)
-    get('/emprestimos').then(setEmprestimos)
+    async function carregar() {
+      try {
+        const [livrosData, emprestimosData] = await Promise.all([
+          get('/livros'),
+          get('/emprestimos'),
+        ])
+        setLivros(livrosData)
+        setEmprestimos(emprestimosData)
+      } catch (error) {
+        setErro(error.message)
+      }
+    }
+    carregar()
   }, [])
 
   const totalLivros = livros.length
@@ -17,6 +29,7 @@ export default function Dashboard() {
   return (
     <div>
       <h1>Painel da Biblioteca</h1>
+      {erro && <p className="alert">{erro}</p>}
       <div className="grid">
         <div className="card">
           <div>Titulos cadastrados</div>

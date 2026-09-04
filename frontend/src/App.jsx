@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Link, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard.jsx'
 import ListaLivros from './pages/ListaLivros.jsx'
 import FormLivro from './pages/FormLivro.jsx'
@@ -8,10 +8,10 @@ function App() {
   return (
     <div>
       <nav>
-        <a href="/">Dashboard</a>
-        <a href="/livros">Livros</a>
-        <a href="/livros/novo">Novo Livro</a>
-        <a href="/emprestimos">Emprestimos</a>
+        <Link to="/">Dashboard</Link>
+        <Link to="/livros">Livros</Link>
+        <Link to="/livros/novo">Novo Livro</Link>
+        <Link to="/emprestimos">Emprestimos</Link>
       </nav>
       <div className="container">
         <Routes>
