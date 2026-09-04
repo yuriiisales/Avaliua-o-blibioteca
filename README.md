@@ -1,4 +1,6 @@
-# Sistema de Biblioteca
+# Avaliacao Biblioteca
+
+Sistema de biblioteca com backend Spring Boot, frontend React/Vite e configuracao pronta para deploy.
 
 ## Como rodar
 
