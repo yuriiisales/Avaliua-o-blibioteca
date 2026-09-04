@@ -35,17 +35,28 @@ O frontend sobe em `http://localhost:5173`.
 Este projeto ja esta preparado para deploy com Docker.
 
 1. Suba o repositorio para o GitHub.
-2. No Render, crie um Web Service usando Docker.
-3. Se o repositorio estiver com as pastas `backend` e `frontend`, preencha `Root Directory` com `backend`.
-4. Configure as variaveis de ambiente:
+2. No Supabase, crie um projeto e copie a string em `Project Settings > Database > Connect > JDBC`.
+3. No Render, crie um Web Service usando Docker.
+4. Se o repositorio estiver com as pastas `backend` e `frontend`, preencha `Root Directory` com `backend`.
+5. Configure as variaveis de ambiente:
 
 ```
-DATABASE_URL=jdbc:postgresql://HOST:5432/postgres
-DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=sua_senha_do_supabase
+SUPABASE_DB_URL=jdbc:postgresql://aws-REGIAO.pooler.supabase.com:5432/postgres?user=postgres.PROJECT_REF&password=SUA_SENHA&sslmode=require
 CORS_ALLOWED_ORIGINS=http://localhost:5173,https://seu-frontend.vercel.app
 JPA_SHOW_SQL=false
+DB_MAX_POOL_SIZE=5
+DB_MIN_IDLE=1
 ```
+
+Se preferir usar a conexao separada em host/usuario/senha, remova `SUPABASE_DB_URL` e configure:
+
+```
+DATABASE_URL=jdbc:postgresql://HOST:5432/postgres?sslmode=require
+DATABASE_USERNAME=postgres.PROJECT_REF
+DATABASE_PASSWORD=SUA_SENHA
+```
+
+Para deploy em Render, o pooler do Supabase em Session mode costuma ser a opcao mais simples, porque a conexao direta pode depender de IPv6.
 
 ### Frontend na Vercel
 
